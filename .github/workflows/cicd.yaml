@@ -20,7 +20,7 @@ jobs:
               with:
                 version: v1.55.2
                 run: golangci-lint run
-                
+                working-directory: product-catalog
 
 
                  
