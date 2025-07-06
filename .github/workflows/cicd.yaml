@@ -3,6 +3,10 @@ on:
     pull_request:
         branches:
             - main
+    push:
+        branches:
+            - main
+    
 
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -72,7 +76,14 @@ jobs:
             sed -i "s|image:.*|image: $IMAGE_NAME:$IMAGE_TAG|" $DEPLOYMENT_FILE
             git add $DEPLOYMENT_FILE
             git commit -m "Update image to $IMAGE_NAME:$IMAGE_TAG [ci skip]" || echo "No changes to commit"
-            git push origin ${{ github.head_ref }}
- 
-
+            git push origin ${{ github.head_ref }}   
+    
+    deploy:
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      runs-on: ubuntu-latest
+      needs: update-deployment
+      name: Deploy to Kubernetes
+      steps:
+        - name: just say hi
+          run: echo "hi, I'll deploy if you give me kube environment"
                  
